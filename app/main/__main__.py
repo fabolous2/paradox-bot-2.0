@@ -11,8 +11,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from app.main.config import settings
 from app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
-from app.bot.handlers import commands
-from app.bot.callbacks import callback
+from app.bot.handlers import message_handlers
+from app.bot.callbacks import callback_handlers
 
 
 logger = logging.getLogger(__name__)
@@ -28,8 +28,8 @@ async def main() -> None:
     dispatcher = Dispatcher(storage=storage)
 
     dispatcher.include_routers(
-        commands.router,
-        callback.router,
+        *message_handlers,
+        *callback_handlers
         )
 
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
