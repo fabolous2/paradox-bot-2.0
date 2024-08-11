@@ -3,9 +3,9 @@ from aiogram.types import Message, Chat
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from app.bot.filters import AdminFilter
-from app.bot.keyboards import inline
-from app.bot.states import MailingSG
+from src.bot.app.bot.filters import AdminFilter
+from src.bot.app.bot.keyboards import inline
+from src.bot.app.bot.states import MailingSG
 
 
 router = Router()

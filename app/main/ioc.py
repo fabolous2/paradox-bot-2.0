@@ -2,8 +2,10 @@ from typing import AsyncGenerator
 
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
+from src.services import PromoService, UserService, ProductService
 
-from app.main.config import settings
+from src.bot.app.main.config import settings
+
 
 class DatabaseProvider(Provider):
     @provide(scope=Scope.APP, provides=AsyncEngine)

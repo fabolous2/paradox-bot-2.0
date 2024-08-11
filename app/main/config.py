@@ -1,10 +1,9 @@
 import toml
-from typing import List
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.schemas import AdminConfig, WebConfig
+from src.bot.app.schemas import AdminConfig, WebConfig
 
 
 class TomlConfig(BaseModel):
@@ -13,8 +12,15 @@ class TomlConfig(BaseModel):
 
 
 class Settings(BaseSettings):
+    DB_NAME: str
+    POSTGRES_USER: str
+    DB_HOST: str
+    DB_PORT: str
+    POSTGRES_PASSWORD: str
+    BOT_URL: str
+    BILEE_SHOP_ID: str
+    BILEE_PASSWORD: str
     BOT_TOKEN: str
-    DATABASE_URL: str
     CONFIG_PATH: str
 
     model_config = SettingsConfigDict(env_file=".env")

@@ -2,9 +2,9 @@ from aiogram import Router, Bot, F
 from aiogram.types import CallbackQuery, Chat
 from aiogram.fsm.context import FSMContext
 
-from app.bot.filters import AdminFilter
-from app.bot.keyboards import inline
-from app.bot.states import MailingSG
+from src.bot.app.bot.filters import AdminFilter
+from src.bot.app.bot.keyboards import inline
+from src.bot.app.bot.states import MailingSG
 
 
 router = Router()
