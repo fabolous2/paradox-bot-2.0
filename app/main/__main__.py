@@ -9,6 +9,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
+
 from src.bot.app.main.config import settings
 from src.bot.app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
 from src.bot.app.bot.handlers import message_handlers
@@ -30,7 +32,9 @@ async def main() -> None:
     dispatcher.include_routers(
         *message_handlers,
         *callback_handlers
-        )
+    )
+
+    TTLCacheAlbumMiddleware(router=dispatcher)
 
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)

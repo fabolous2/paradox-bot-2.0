@@ -1,5 +1,4 @@
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
@@ -25,7 +24,7 @@ async def promo_name_handler(message: Message, state: FSMContext) -> None:
 @router.message(CreatePromoSG.GIFT_AMOUNT)
 async def promo_gift_amount_handler(message: Message, state: FSMContext) -> None:
     if message.text.isdigit():
-        await state.update_data(gift_amount=message.text)
+        await state.update_data(bonus_amount=message.text)
         await message.answer('Введите количество использований')
         await state.set_state(CreatePromoSG.USES)
     else:
@@ -40,7 +39,11 @@ async def promo_gift_amount_handler(
 ) -> None:
     if message.text.isdigit():
         data = await state.get_data()
-        await promo_service.add_promo(name=data['name'], gift_amount=data['gift_amount'], uses=int(message.text))
+        await promo_service.add_promo(
+            name=data['name'],
+            bonus_amount=data['bonus_amount'],
+            uses=int(message.text),
+        )
         await message.answer('Вы успешно добавили промокод!')
         await state.clear()
     else:
@@ -57,11 +60,11 @@ async def edit_promo_name_handler(
     name = message.text
 
     if name.isdigit():
-        promo = await promo_service.get_promo_by_id(id=name)
-        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.gift_amount}₽\nКол-во использований: {promo.uses}\n\nВыберите один из вариантов:', reply_markup=inline.edit_promo_kb_markup(name=message.text))
+        promo = await promo_service.get_one_promo(id=name)
+        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.bonus_amount}₽\nКол-во использований: {promo.uses}\n\nВыберите один из вариантов:', reply_markup=inline.edit_promo_kb_markup(name=message.text))
     else:
-        promo = await promo_service.get_promo_by_name(name=name)
-        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.gift_amount}₽\nКол-во использований: {promo.uses}\n\nВыберите один из вариантов:', reply_markup=inline.edit_promo_kb_markup(name=message.text))
+        promo = await promo_service.get_one_promo(name=name)
+        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.bonus_amount}₽\nКол-во использований: {promo.uses}\n\nВыберите один из вариантов:', reply_markup=inline.edit_promo_kb_markup(name=message.text))
 
 
 @router.message(EditPromoSG.NEW_GIFT_AMOUNT)
@@ -72,9 +75,9 @@ async def new_amount_handler(
 ) -> None:
     data = await state.get_data()
     if data['name'].isdigit():
-        await promo_service.update_promo_by_id(id=data['name'], bonus_amount=int(message.text))
+        await promo_service.update_promo(promo_id=data['name'], bonus_amount=int(message.text))
     else:
-        await promo_service.update_promo_by_name(name=data['name'], bonus_amount=int(message.text))
+        await promo_service.update_promo(name=data['name'], bonus_amount=int(message.text))
 
     await message.answer('Новое значение было успешно установлено')
     await state.clear()
@@ -88,11 +91,9 @@ async def new_uses_handler(
 ) -> None:
     data = await state.get_data()
     if data['name'].isdigit():
-        await promo_service.update_promo_by_id(id=data['name'], uses=int(message.text))
-        pass
+        await promo_service.update_promo(promo_id=data['name'], uses=int(message.text))
     else:
-        await promo_service.update_promo_by_name(name=data['name'], uses=int(message.text))
-        pass
+        await promo_service.update_promo(name=data['name'], uses=int(message.text))
     await message.answer('Новое значение было успешно установлено')
     await state.clear()
 
@@ -106,11 +107,11 @@ async def show_info_promo_handler(
     await state.clear()
     name = message.text
     if name.isdigit():
-        promo = await promo_service.get_promo_by_id(id=name)
-        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.gift_amount}₽\nКол-во оставшихся использований: {promo.uses}')
+        promo = await promo_service.get_one_promo(id=name)
+        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.bonus_amount}₽\nКол-во оставшихся использований: {promo.uses}')
     else:
-        promo = await promo_service.get_promo_by_name(name=name)
-        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.gift_amount}₽\nКол-во оставшихся использований: {promo.uses}')
+        promo = await promo_service.get_one_promo(name=name)
+        await message.answer(f'Номер: №{promo.id}\nНазвание: {promo.name}\nСумма: {promo.bonus_amount}₽\nКол-во оставшихся использований: {promo.uses}')
 
 
 @router.message(DeletePromoSG.NAME)
