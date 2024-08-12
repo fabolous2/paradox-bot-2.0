@@ -1,6 +1,7 @@
 from aiogram import Router, Bot, F
 from aiogram.types import CallbackQuery, Chat
 from aiogram.fsm.context import FSMContext
+from aiogram.utils.media_group import MediaGroupBuilder
 
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
@@ -36,13 +37,13 @@ async def mailing_handler(
     await bot.edit_message_text(
         message_id=query.message.message_id,
         chat_id=event_chat.id,
-        text="Введите текст рассылки:",
+        text="Отправьте сообщение, которое желаете разослать всем пользователям:",
         reply_markup=inline.back_to_apanel_kb_markup,
     )
     await state.set_state(MailingSG.MESSAGE)
 
 
-@router.callback_query(F.data == 'mailing_yes')
+@router.callback_query(F.data == 'confirm_mailing')
 async def mailing_sender_handler(
     query: CallbackQuery,
     state: FSMContext,
@@ -50,16 +51,20 @@ async def mailing_sender_handler(
     event_chat: Chat,
 ) -> None:
     state_data = await state.get_data()
-    mailing_message_id = state_data.get("mailing_message_id")
+    media_group = state_data.get("media_group")
+    message_id = state_data.get("message_id")
 
     users = [6384960822, 5297779345]
     for chat_id in users:
-        try:    
-            await bot.copy_message(
-                chat_id=chat_id,
-                from_chat_id=event_chat.id,
-                message_id=mailing_message_id,
-            )
+        try:
+            if media_group:
+                await bot.send_media_group(chat_id=chat_id, media=media_group.build())
+            elif message_id:
+                await bot.copy_message(
+                    chat_id=chat_id,
+                    message_id=message_id,
+                    from_chat_id=event_chat.id,
+                )
         except Exception as ex:
             print(ex)
 
@@ -71,7 +76,7 @@ async def mailing_sender_handler(
     await state.clear()
 
 
-@router.callback_query(F.data == 'mailing_no')
+@router.callback_query(F.data == 'cancel_mailing')
 async def mailing_sender_handler(
     query: CallbackQuery,
     state: FSMContext,

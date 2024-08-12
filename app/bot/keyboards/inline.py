@@ -50,8 +50,8 @@ back_to_apanel_kb_markup = InlineKeyboardMarkup(
 mailing_choice_kb_markup = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="Да", callback_data="mailing_yes"),
-            InlineKeyboardButton(text="Нет", callback_data="mailing_no"),
+            InlineKeyboardButton(text="Да", callback_data="confirm_mailing"),
+            InlineKeyboardButton(text="Нет", callback_data="cancel_mailing"),
         ],
     ]
 )
