@@ -84,3 +84,19 @@ def edit_promo_kb_markup(name: int | str) -> InlineKeyboardMarkup:
         ]
     )
     return kb_markup
+
+
+def update_user_kb_markup(user_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text='Пополнить баланс', callback_data=f'top_up_balance:{user_id}'),
+            ],
+            [
+                InlineKeyboardButton(text='Отнять баланс', callback_data=f'lower_balance:{user_id}'),
+            ],
+            [
+                InlineKeyboardButton(text='Установить баланс', callback_data=f'set_balance:{user_id}'),
+            ],
+        ]
+    )

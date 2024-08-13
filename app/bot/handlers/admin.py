@@ -1,14 +1,17 @@
 from aiogram import Router, Bot, F
-from aiogram.types import Message, Chat, FSInputFile, InputMediaPhoto
+from aiogram.types import Message, Chat
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.media_group import MediaGroupBuilder
 
 from aiogram_album.album_message import AlbumMessage
 
+from dishka import FromDishka
+
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
-from src.bot.app.bot.states import MailingSG
+from src.bot.app.bot.states import MailingSG, UpdateUserSG
+from src.services import UserService
 
 
 router = Router()
@@ -65,3 +68,109 @@ async def mailing_message_handler(
         reply_markup=inline.mailing_choice_kb_markup,
     )
     await state.set_state(MailingSG.CHECKOUT)
+
+
+#User Management
+@router.message(UpdateUserSG.USER_ID, F.text)
+async def update_user_handler(
+    message: Message,
+    bot: Bot,
+    event_chat: Chat,
+    user_service: FromDishka[UserService],
+    state: FSMContext,
+) -> None:
+    if not message.text.isdigit():
+        return await bot.send_message(chat_id=event_chat.id, text='Введите корректный ID пользователя!')
+    
+    user = await user_service.get_one_user(user_id=int(message.text))
+    if not user:
+        await bot.send_message(chat_id=event_chat.id, text='Пользователь с данным ID не был найден!')
+        return await state.clear()
+    
+    await bot.send_message(
+        chat_id=event_chat.id,
+        text=f'ID: {user.user_id}\nБАЛАНС: {user.balance}',
+        reply_markup=inline.update_user_kb_markup(user_id=user.user_id),
+    )
+    await state.clear()
+
+
+@router.message(UpdateUserSG.TOP_UP_BALANCE, F.text)
+async def top_up_user_handler(
+    message: Message,
+    bot: Bot,
+    event_chat: Chat,
+    user_service: FromDishka[UserService],
+    state: FSMContext,
+) -> None:
+    if not message.text.isdigit():
+        return await bot.send_message(chat_id=event_chat.id, text='Сумма пополнение должна состоять только из цифр!')
+    
+    state_data = await state.get_data()
+    user_id = int(state_data.get('user_id'))
+
+    try:
+        user = await user_service.get_one_user(user_id=user_id)
+        await user_service.update_user(user_id=user_id, balance=user.balance + int(message.text))
+        await bot.send_message(chat_id=event_chat.id, text='Вы успешно пополнили пользователю баланс!')
+    except Exception as ex:
+        print(ex)
+        await bot.send_message(chat_id=event_chat.id, text='Упс... Что-то пошло не так.')
+    finally:
+        await state.clear()
+
+
+@router.message(UpdateUserSG.LOWER_BALANCE, F.text)
+async def lower_user_handler(
+    message: Message,
+    bot: Bot,
+    event_chat: Chat,
+    user_service: FromDishka[UserService],
+    state: FSMContext,
+) -> None:
+    if not message.text.isdigit():
+        return await bot.send_message(chat_id=event_chat.id, text='Сумма, которую вы хотите отнять должна состоять только из цифр!')
+    
+    state_data = await state.get_data()
+    user_id = int(state_data.get('user_id'))
+    user = await user_service.get_one_user(user_id=user_id)
+    total = user.balance - int(message.text)
+
+    if total < 0:
+        await bot.send_message(
+            chat_id=event_chat.id,
+            text='Сумма на балансе у пользователя не должна быть отрицательной! Попробуйте ввести другое число.',
+        )
+    else:
+        try:
+            await user_service.update_user(user_id=user_id, balance=total)
+            await bot.send_message(chat_id=event_chat.id, text='Вы успешно отняли пользователю баланс!')
+        except Exception as ex:
+            print(ex)
+            await bot.send_message(chat_id=event_chat.id, text='Упс... Что-то пошло не так.')
+        finally:
+            await state.clear()
+
+
+@router.message(UpdateUserSG.SET_BALANCE, F.text)
+async def set_user_balance_handler(
+    message: Message,
+    bot: Bot,
+    event_chat: Chat,
+    user_service: FromDishka[UserService],
+    state: FSMContext,
+) -> None:
+    if not message.text.isdigit():
+        return await bot.send_message(chat_id=event_chat.id, text='Сумма, которую вы хотите установить должна состоять только из цифр!')
+    
+    state_data = await state.get_data()
+    user_id = state_data.get('user_id')
+
+    try:
+        await user_service.update_user(user_id=int(user_id), balance=int(message.text))
+        await bot.send_message(chat_id=event_chat.id, text='Вы успешно установили пользователю баланс!')
+    except Exception as ex:
+        print(ex)
+        await bot.send_message(chat_id=event_chat.id, text='Упс... Что-то пошло не так.')
+    finally:
+        await state.clear()

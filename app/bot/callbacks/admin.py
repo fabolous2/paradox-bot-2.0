@@ -5,7 +5,7 @@ from aiogram.utils.media_group import MediaGroupBuilder
 
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
-from src.bot.app.bot.states import MailingSG
+from src.bot.app.bot.states import MailingSG, UpdateUserSG
 
 
 router = Router()
@@ -86,3 +86,64 @@ async def mailing_sender_handler(
     await state.clear()
     await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
     await bot.send_message(chat_id=event_chat.id, text="Рассылка успешно отменена")
+
+
+#User Management
+@router.callback_query(F.data == 'user_management')
+async def user_profiles_handler(query: CallbackQuery, state: FSMContext) -> None:
+    await query.message.answer('👤 Введите ID пользователя, чей профиль хотите редактировать.')
+    await state.set_state(UpdateUserSG.USER_ID)
+
+
+@router.callback_query(F.data.startswith('top_up_balance'))
+async def top_up_handler(
+    query: CallbackQuery, 
+    state: FSMContext,
+    bot: Bot,
+    event_chat: Chat,
+) -> None:
+    user_id = query.data.split(':')[-1]
+    await state.update_data(user_id=user_id)
+    
+    await bot.edit_message_text(
+        chat_id=event_chat.id,
+        text='Введите сумму, на которую хотите пополнить баланс пользователя.',
+        message_id=query.message.message_id,
+    )
+    await state.set_state(UpdateUserSG.TOP_UP_BALANCE)
+
+
+@router.callback_query(F.data.startswith('lower_balance'))
+async def lower_balance_handler(
+    query: CallbackQuery, 
+    state: FSMContext,
+    bot: Bot,
+    event_chat: Chat,
+) -> None:
+    user_id = query.data.split(':')[-1]
+    await state.update_data(user_id=user_id)
+
+    await bot.edit_message_text(
+        chat_id=event_chat.id,
+        text='Введите сумму, которую хотите отнять у пользователя.',
+        message_id=query.message.message_id,
+    )
+    await state.set_state(UpdateUserSG.LOWER_BALANCE)
+
+
+@router.callback_query(F.data.startswith('set_balance'))
+async def set_balance_handler(
+    query: CallbackQuery, 
+    state: FSMContext,
+    bot: Bot,
+    event_chat: Chat,
+) -> None:
+    user_id = query.data.split(':')[-1]
+    await state.update_data(user_id=user_id)
+    
+    await bot.edit_message_text(
+        chat_id=event_chat.id,
+        text='Введите сумму, которую хотите установить пользователю.',
+        message_id=query.message.message_id,
+    )
+    await state.set_state(UpdateUserSG.SET_BALANCE)
