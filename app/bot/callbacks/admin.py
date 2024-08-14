@@ -1,11 +1,16 @@
+import uuid
+
 from aiogram import Router, Bot, F
 from aiogram.types import CallbackQuery, Chat
 from aiogram.fsm.context import FSMContext
-from aiogram.utils.media_group import MediaGroupBuilder
+
+from dishka import FromDishka
 
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
 from src.bot.app.bot.states import MailingSG, UpdateUserSG
+from src.services import OrderService, ProductService, UserService
+from src.schema.order import OrderStatus
 
 
 router = Router()
@@ -147,3 +152,67 @@ async def set_balance_handler(
         message_id=query.message.message_id,
     )
     await state.set_state(UpdateUserSG.SET_BALANCE)
+
+
+#ORDER
+@router.callback_query(F.data.startswith('confirm_order'))
+async def confirm_order_handler(
+    query: CallbackQuery,
+    order_service: FromDishka[OrderService],
+    product_service: FromDishka[ProductService],
+    bot: Bot,
+    event_chat: Chat,
+) -> None:
+    order_id = query.data.split(':')[-1]
+    order = await order_service.get_one_order(id=order_id)
+
+    if order.status == OrderStatus.PROGRESS.value:
+        product = await product_service.get_one_product(id=order.product_id)
+
+        await order_service.update_order(
+            order_id=uuid.UUID(order_id),
+            status=OrderStatus.COMPLETED,
+        )
+        await product_service.update_product(product_id=order.product_id, purchase_count=product.purchase_count + 1)
+
+        await bot.send_message(
+            chat_id=order.user_id,
+            text='✅ Ваш заказ выполнен! Спасибо за покупку, буду рад увидеться снова, могли бы оставить отзыва по кнопке снизу 👇',
+            reply_markup=inline.post_feedback_kb_markup,
+        )
+        await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
+    else:
+        await query.answer(text='Заказ уже обработан другим администратором', show_alert=True)
+        await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
+
+
+@router.callback_query(F.data.startswith('confirm_order'))
+async def confirm_order_handler(
+    query: CallbackQuery,
+    order_service: FromDishka[OrderService],
+    product_service: FromDishka[ProductService],
+    user_service: FromDishka[UserService],
+    bot: Bot,
+    event_chat: Chat,
+) -> None:
+    order_id = query.data.split(':')[-1]
+    order = await order_service.get_one_order(id=order_id)
+    
+    if order.status == OrderStatus.PROGRESS.value:
+        user = await user_service.get_one_user(user_id=order.user_id)
+        product = await product_service.get_one_product(id=order.product_id)
+
+        await order_service.update_order(
+            order_id=uuid.UUID(order_id),
+            status=OrderStatus.CLOSED,
+        )
+        await user_service.update_user(user_id=order.user_id, balance=user.balance + order.price)
+
+        await bot.send_message(
+            chat_id=order.user_id,
+            text=f'❌ Ваш заказ на {product.name} был отклонен! Средства были возвращены на ваш счет.',
+        )
+        await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
+    else:
+        await query.answer(text='Заказ уже обработан другим администратором', show_alert=True)
+        await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)

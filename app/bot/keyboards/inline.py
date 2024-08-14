@@ -100,3 +100,25 @@ def update_user_kb_markup(user_id: int) -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def order_confirmation_kb_markup(order_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text='✅ Подтвердить', callback_data=f'confirm_order:{order_id}'),
+            ],
+            [
+                InlineKeyboardButton(text='❌ Отменить', callback_data=f'cancel_order:{order_id}'),
+            ],
+        ]
+    )
+
+
+post_feedback_kb_markup = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Оставить отзыв', callback_data='not_implemented')
+        ]
+    ]
+)
