@@ -20,14 +20,6 @@ async def start_handler(
     event_chat: Chat,
     user_service: FromDishka[UserService],
 ) -> None:
-    user_id = message.from_user.id
-    exists = await user_service.exists(user_id=user_id)
-    if not exists:
-        await user_service.add_user(
-            user_id=user_id,
-            referral_code=str(user_id),
-        )
-        
     await bot.send_photo(
         photo=FSInputFile(os.path.normpath("src/bot/app/bot/files/paradox.jpg")),
         chat_id=event_chat.id,

@@ -15,6 +15,7 @@ from src.bot.app.main.config import settings
 from src.bot.app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
 from src.bot.app.bot.handlers import message_handlers
 from src.bot.app.bot.callbacks import callback_handlers
+from src.bot.app.bot.middlewares import UserMiddleware
 
 
 logger = logging.getLogger(__name__)
@@ -33,11 +34,13 @@ async def main() -> None:
         *message_handlers,
         *callback_handlers
     )
-
-    TTLCacheAlbumMiddleware(router=dispatcher)
-
+    
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)
+
+    dispatcher.message.middleware.register(UserMiddleware(dishka_container=container))
+    dispatcher.callback_query.middleware.register(UserMiddleware(dishka_container=container))
+    TTLCacheAlbumMiddleware(router=dispatcher)
 
     try:
         await bot.delete_webhook(drop_pending_updates=True)
