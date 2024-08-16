@@ -1,3 +1,5 @@
+import uuid
+
 from aiogram import Router, Bot, F
 from aiogram.types import Message, Chat
 from aiogram.filters import Command
@@ -11,7 +13,8 @@ from dishka import FromDishka
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
 from src.bot.app.bot.states import MailingSG, UpdateUserSG
-from src.services import UserService
+from src.services import UserService, TransactionService
+from src.schema.transaction import TransactionCause, TransactionType
 
 
 router = Router()
@@ -101,6 +104,7 @@ async def top_up_user_handler(
     bot: Bot,
     event_chat: Chat,
     user_service: FromDishka[UserService],
+    transaction_service: FromDishka[TransactionService],
     state: FSMContext,
 ) -> None:
     if not message.text.isdigit():
@@ -110,8 +114,17 @@ async def top_up_user_handler(
     user_id = int(state_data.get('user_id'))
 
     try:
+        top_up_amount = int(message.text)
         user = await user_service.get_one_user(user_id=user_id)
-        await user_service.update_user(user_id=user_id, balance=user.balance + int(message.text))
+    
+        await user_service.update_user(user_id=user_id, balance=user.balance + top_up_amount)
+        await transaction_service.add_transaction(
+                id=uuid.uuid4(),
+                user_id=user_id,
+                type=TransactionType.DEBIT,
+                cause=TransactionCause.ADMIN_DEPOSIT,
+                amount=top_up_amount,
+            )
         await bot.send_message(chat_id=event_chat.id, text='Вы успешно пополнили пользователю баланс!')
     except Exception as ex:
         print(ex)
@@ -126,6 +139,7 @@ async def lower_user_handler(
     bot: Bot,
     event_chat: Chat,
     user_service: FromDishka[UserService],
+    transaction_service: FromDishka[TransactionService],
     state: FSMContext,
 ) -> None:
     if not message.text.isdigit():
@@ -144,6 +158,13 @@ async def lower_user_handler(
     else:
         try:
             await user_service.update_user(user_id=user_id, balance=total)
+            await transaction_service.add_transaction(
+                id=uuid.uuid4(),
+                user_id=user_id,
+                type=TransactionType.DEBIT,
+                cause=TransactionCause.ADMIN_DEBIT,
+                amount=int(message.text),
+            )
             await bot.send_message(chat_id=event_chat.id, text='Вы успешно отняли пользователю баланс!')
         except Exception as ex:
             print(ex)
