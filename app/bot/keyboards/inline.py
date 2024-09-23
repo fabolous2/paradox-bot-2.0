@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
 from src.bot.app.main.config import dev_config
@@ -5,9 +7,9 @@ from src.bot.app.main.config import dev_config
 
 main_keyboard_markup = InlineKeyboardMarkup(
     inline_keyboard=[
-        # [
-        #     InlineKeyboardButton(text="Открыть Магазин", callback_data='not_implemented'), #web_app=WebAppInfo(url="https://localhost:5173/")
-        # ],
+        [
+            InlineKeyboardButton(text="Открыть Магазин", web_app=WebAppInfo(url="http://localhost:3000/")),
+        ],
         [
             InlineKeyboardButton(text="Поддержка", callback_data="support"),
             InlineKeyboardButton(text="Правила", url="https://telegra.ph/ParadoxShop-06-03"),
@@ -102,7 +104,7 @@ def update_user_kb_markup(user_id: int) -> InlineKeyboardMarkup:
     )
 
 
-def order_confirmation_kb_markup(order_id: int) -> InlineKeyboardMarkup:
+def order_confirmation_kb_markup(order_id: UUID) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
