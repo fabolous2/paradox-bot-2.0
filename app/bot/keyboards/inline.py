@@ -8,7 +8,7 @@ from src.bot.app.main.config import dev_config
 main_keyboard_markup = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="Открыть Магазин", web_app=WebAppInfo(url="http://localhost:3000/")),
+            InlineKeyboardButton(text="Открыть Магазин", web_app=WebAppInfo(url="https://paradox-shop.ru/"))
         ],
         [
             InlineKeyboardButton(text="Поддержка", callback_data="support"),
