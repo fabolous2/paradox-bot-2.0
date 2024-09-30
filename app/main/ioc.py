@@ -3,9 +3,28 @@ from typing import AsyncGenerator
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
 
-from src.services import PromoService, UserService
-from src.data.dal import PromoDAL, UserDAL
 from src.main.config import settings
+
+from src.services import (
+    UserService,
+    ProductService,
+    TransactionService,
+    OrderService,
+    PromoService,
+    SupercellAuthService,
+    FeedbackService,
+    BileeService,
+    GameService,
+)
+from src.data.dal import (
+    UserDAL,
+    ProductDAL,
+    TransactionDAL,
+    OrderDAL,
+    PromoDAL,
+    FeedbackDAL,
+    GameDAL,
+)
 
 
 class DatabaseProvider(Provider):
@@ -25,8 +44,21 @@ class DatabaseProvider(Provider):
 
 class DALProvider(Provider):
     user_dal = provide(UserDAL, scope=Scope.REQUEST, provides=UserDAL)
+    product_dal = provide(ProductDAL, scope=Scope.REQUEST, provides=ProductDAL)
+    transaction_dal = provide(TransactionDAL, scope=Scope.REQUEST, provides=TransactionDAL)
+    order_dal = provide(OrderDAL, scope=Scope.REQUEST, provides=OrderDAL)
     promo_dal = provide(PromoDAL, scope=Scope.REQUEST, provides=PromoDAL)
+    feedback_dal = provide(FeedbackDAL, scope=Scope.REQUEST, provides=FeedbackDAL)
+    game_dal = provide(GameDAL, scope=Scope.REQUEST, provides=GameDAL)
+
 
 class ServiceProvider(Provider):
     user_service = provide(UserService, scope=Scope.REQUEST, provides=UserService)
+    product_service = provide(ProductService, scope=Scope.REQUEST, provides=ProductService)
+    transaction_service = provide(TransactionService, scope=Scope.REQUEST, provides=TransactionService)
+    order_service = provide(OrderService, scope=Scope.REQUEST, provides=OrderService)
     promo_service = provide(PromoService, scope=Scope.REQUEST, provides=PromoService)
+    supercell_service = provide(SupercellAuthService, scope=Scope.REQUEST, provides=SupercellAuthService)
+    feedback_service = provide(FeedbackService, scope=Scope.REQUEST, provides=FeedbackService)
+    bilee_service = provide(BileeService, scope=Scope.REQUEST, provides=BileeService)
+    game_service = provide(GameService, scope=Scope.REQUEST, provides=GameService)
