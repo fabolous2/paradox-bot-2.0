@@ -178,7 +178,7 @@ async def confirm_order_handler(
         await bot.send_message(
             chat_id=order.user_id,
             text='✅ Ваш заказ выполнен! Спасибо за покупку, буду рад увидеться снова, могли бы оставить отзыва по кнопке снизу 👇',
-            reply_markup=inline.post_feedback_kb_markup,
+            reply_markup=inline.post_feedback_kb_markup(product_id=order.product_id),
         )
         await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
     else:
@@ -186,8 +186,8 @@ async def confirm_order_handler(
         await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
 
 
-@router.callback_query(F.data.startswith('confirm_order'))
-async def confirm_order_handler(
+@router.callback_query(F.data.startswith('cancel_order'))
+async def cancel_order_handler(
     query: CallbackQuery,
     order_service: FromDishka[OrderService],
     product_service: FromDishka[ProductService],

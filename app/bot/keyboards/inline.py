@@ -117,10 +117,11 @@ def order_confirmation_kb_markup(order_id: UUID) -> InlineKeyboardMarkup:
     )
 
 
-post_feedback_kb_markup = InlineKeyboardMarkup(
-    inline_keyboard=[
+def post_feedback_kb_markup(product_id: UUID) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
         [
-            InlineKeyboardButton(text='Оставить отзыв', callback_data='not_implemented')
+                InlineKeyboardButton(text='Оставить отзыв', callback_data=WebAppInfo(url=f'https://paradox-shop.ru/post-feedback/{product_id}'))
+            ]
         ]
-    ]
-)
+    )
