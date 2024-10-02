@@ -121,7 +121,7 @@ async def top_up_user_handler(
         await transaction_service.add_transaction(
                 id=uuid.uuid4(),
                 user_id=user_id,
-                type=TransactionType.DEBIT,
+                type=TransactionType.DEPOSIT,
                 cause=TransactionCause.ADMIN_DEPOSIT,
                 amount=top_up_amount,
                 is_successful=True,
