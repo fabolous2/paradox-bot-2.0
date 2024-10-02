@@ -124,6 +124,7 @@ async def top_up_user_handler(
                 type=TransactionType.DEBIT,
                 cause=TransactionCause.ADMIN_DEPOSIT,
                 amount=top_up_amount,
+                is_successful=True,
             )
         await bot.send_message(chat_id=event_chat.id, text='Вы успешно пополнили пользователю баланс!')
     except Exception as ex:
@@ -164,6 +165,7 @@ async def lower_user_handler(
                 type=TransactionType.DEBIT,
                 cause=TransactionCause.ADMIN_DEBIT,
                 amount=int(message.text),
+                is_successful=True,
             )
             await bot.send_message(chat_id=event_chat.id, text='Вы успешно отняли пользователю баланс!')
         except Exception as ex:
