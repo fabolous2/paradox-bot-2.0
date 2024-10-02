@@ -1,3 +1,5 @@
+import uuid
+
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
@@ -40,6 +42,7 @@ async def promo_gift_amount_handler(
     if message.text.isdigit():
         data = await state.get_data()
         await promo_service.add_promo(
+            id=uuid.uuid4(),
             name=data['name'],
             bonus_amount=data['bonus_amount'],
             uses=int(message.text),
