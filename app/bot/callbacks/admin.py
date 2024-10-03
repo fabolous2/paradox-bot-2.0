@@ -54,19 +54,20 @@ async def mailing_sender_handler(
     state: FSMContext,
     bot: Bot,
     event_chat: Chat,
+    user_service: FromDishka[UserService],
 ) -> None:
     state_data = await state.get_data()
     media_group = state_data.get("media_group")
     message_id = state_data.get("message_id")
 
-    users = [6384960822, 5297779345]
-    for chat_id in users:
+    users = await user_service.get_users()
+    for user in users:
         try:
             if media_group:
-                await bot.send_media_group(chat_id=chat_id, media=media_group.build())
+                await bot.send_media_group(chat_id=user.user_id, media=media_group.build())
             elif message_id:
                 await bot.copy_message(
-                    chat_id=chat_id,
+                    chat_id=user.user_id,
                     message_id=message_id,
                     from_chat_id=event_chat.id,
                 )
