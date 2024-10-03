@@ -33,7 +33,7 @@ admin_menu_kb_markup = InlineKeyboardMarkup(
             InlineKeyboardButton(text="Промокоды", callback_data="admin_promo"),
         ],
         [
-            InlineKeyboardButton(text="Управление сайтом", callback_data="web_management"),
+            InlineKeyboardButton(text="Управление товарами", callback_data="product_management"),
             InlineKeyboardButton(text="Управление пользователями", callback_data="user_management"),
         ],
     ]

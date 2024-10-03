@@ -11,12 +11,15 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
 
+from aiogram_dialog import setup_dialogs
+
 from src.bot.app.main.config import settings
 from src.bot.app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
 from src.bot.app.bot.handlers import message_handlers
 from src.bot.app.bot.callbacks import callback_handlers
 from src.bot.app.bot.middlewares import UserMiddleware
-
+from src.bot.app.bot.dialogs.product import product_management_dialog
+from src.bot.app.bot.dialogs.getter import YandexStorageMedia
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +30,16 @@ async def main() -> None:
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     storage = MemoryStorage()
-    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token="7398400733:AAFHHNfMQQBv-eCKPbn4QNoieA9-toWem2o", default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
     dispatcher.include_routers(
         *message_handlers,
-        *callback_handlers
+        *callback_handlers,
+        product_management_dialog,
     )
-    
+    setup_dialogs(dispatcher, message_manager=YandexStorageMedia())
+
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)
 

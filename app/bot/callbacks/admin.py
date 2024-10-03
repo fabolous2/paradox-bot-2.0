@@ -6,11 +6,14 @@ from aiogram.fsm.context import FSMContext
 
 from dishka import FromDishka
 
+from aiogram_dialog import DialogManager, StartMode, ShowMode
+
 from src.bot.app.bot.filters import AdminFilter
 from src.bot.app.bot.keyboards import inline
 from src.bot.app.bot.states import MailingSG, UpdateUserSG
 from src.services import OrderService, ProductService, UserService
 from src.schema.order import OrderStatus
+from src.bot.app.bot.states.product import ProductManagementSG
 
 
 router = Router()
@@ -217,3 +220,15 @@ async def cancel_order_handler(
     else:
         await query.answer(text='Заказ уже обработан другим администратором', show_alert=True)
         await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
+
+
+@router.callback_query(F.data == 'product_management')
+async def product_management_handler(
+    query: CallbackQuery,
+    dialog_manager: DialogManager,
+) -> None:
+    await dialog_manager.start(
+        ProductManagementSG.GAMES,
+        mode=StartMode.RESET_STACK,
+        show_mode=ShowMode.DELETE_AND_SEND,
+    )
