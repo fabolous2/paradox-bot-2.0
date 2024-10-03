@@ -30,7 +30,7 @@ async def main() -> None:
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
     storage = MemoryStorage()
-    bot = Bot(token="7398400733:AAFHHNfMQQBv-eCKPbn4QNoieA9-toWem2o", default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
     dispatcher.include_routers(
