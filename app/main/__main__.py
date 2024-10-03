@@ -14,7 +14,7 @@ from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
 from aiogram_dialog import setup_dialogs
 
 from src.bot.app.main.config import settings
-from src.bot.app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
+from src.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
 from src.bot.app.bot.handlers import message_handlers
 from src.bot.app.bot.callbacks import callback_handlers
 from src.bot.app.bot.middlewares import UserMiddleware
