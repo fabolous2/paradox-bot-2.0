@@ -184,6 +184,7 @@ async def confirm_order_handler(
             text='✅ Ваш заказ выполнен! Спасибо за покупку, буду рад увидеться снова, могли бы оставить отзыва по кнопке снизу 👇',
             reply_markup=inline.post_feedback_kb_markup(product_id=order.product_id),
         )
+        await query.answer(text='Ответ был успешно отправлен пользователю!', show_alert=True)
         await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
     else:
         await query.answer(text='Заказ уже обработан другим администратором', show_alert=True)
@@ -216,6 +217,7 @@ async def cancel_order_handler(
             chat_id=order.user_id,
             text=f'❌ Ваш заказ на {product.name} был отклонен! Средства были возвращены на ваш счет.',
         )
+        await query.answer(text='Ответ был успешно отправлен пользователю!', show_alert=True)
         await bot.delete_message(chat_id=event_chat.id, message_id=query.message.message_id)
     else:
         await query.answer(text='Заказ уже обработан другим администратором', show_alert=True)
