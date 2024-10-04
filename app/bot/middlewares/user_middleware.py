@@ -52,7 +52,7 @@ class UserMiddleware(BaseMiddleware):
             await user_service.add_user(
                 user_id=user.id,
                 referral_code=str(user.id),
-                referral_id=reffer_id,
+                referral_id=int(reffer_id) if reffer_id else None,
                 nickname=user_fullname,
                 profile_photo=file_url,
             )
