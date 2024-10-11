@@ -7,7 +7,8 @@ from dishka import make_async_container
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
+
 
 from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
 
@@ -29,7 +30,7 @@ async def main() -> None:
         level=logging.INFO,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
-    storage = MemoryStorage()
+    storage = RedisStorage.from_url('redis://redis:6379/0')
     bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
