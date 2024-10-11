@@ -50,7 +50,7 @@ product_management_dialog = Dialog(
                 on_click=selected_game,
             ),
             id="game_group",
-            height=9,
+            height=10,
             width=2,
             hide_on_single_page=True,
             hide_pager=True

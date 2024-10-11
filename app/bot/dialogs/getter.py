@@ -42,6 +42,10 @@ async def games_getter(
 ) -> dict:
     games = await game_service.get_all_games()
     
+    for game in games:
+        if game.id in [15, 16, 17, 18]:
+            game.name += "⭐"
+    
     return {
         "games": games,
     }
@@ -57,6 +61,9 @@ async def one_game_getter(
     game_id = dialog_manager.dialog_data["game_id"]
     game = await game_service.get_game(id=int(game_id))
     products = await product_service.get_products(game_id=int(game_id))
+
+    if game.id in [15, 16, 17, 18]:
+        game.name += "⭐"
 
     return {
         "products": products,
