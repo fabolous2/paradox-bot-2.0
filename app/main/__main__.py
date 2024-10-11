@@ -8,6 +8,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.base import DefaultKeyBuilder
 
 
 from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
@@ -30,7 +31,10 @@ async def main() -> None:
         level=logging.INFO,
         format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
     )
-    storage = RedisStorage.from_url('redis://redis:6379/0')
+    storage = RedisStorage.from_url(
+        'redis://redis:6379/0',
+        key_builder=DefaultKeyBuilder(with_destiny=True),
+    )
     bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
