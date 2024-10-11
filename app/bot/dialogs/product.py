@@ -86,7 +86,8 @@ product_management_dialog = Dialog(
             height=10,
             width=2,
             hide_on_single_page=True,
-            hide_pager=True
+            hide_pager=True,
+            when="products"
         ),
         Button(
             id='add_product',
@@ -103,6 +104,7 @@ product_management_dialog = Dialog(
             NextPage(
                 scroll="product_group", text=Format("▶️"),
             ),
+            when="products"
         ),
         MessageInput(
             func=message_input_fixing
