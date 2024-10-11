@@ -271,7 +271,12 @@ async def on_input_photo_new_product(
             "10": "Stumble Guys",
             "11": "My Singing Monsters",
             "12": "World of Tanks [Евро]",
-            "13": "Blockman Go"
+            "13": "Blockman Go",
+            "14": "Supercell Store",
+            "15": "Brawl Stars",
+            "16": "Squad Busters",
+            "17": "Clash of Clans",
+            "18": "Clash Royale",
         }
 
         image_url = await yandex_storage_client.upload_file(photo_bytes, object_name=f"{message.photo[-1].file_id}.jpg")
