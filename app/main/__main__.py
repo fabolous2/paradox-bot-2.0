@@ -35,7 +35,7 @@ async def main() -> None:
         'redis://redis:6379/0',
         key_builder=DefaultKeyBuilder(with_destiny=True),
     )
-    bot = Bot(token="7398400733:AAFHHNfMQQBv-eCKPbn4QNoieA9-toWem2o", default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
     dispatcher.include_routers(
