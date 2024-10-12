@@ -1,8 +1,8 @@
 import os
 
 from aiogram import Router, Bot
-from aiogram.filters import CommandStart
-from aiogram.types import Message, Chat, FSInputFile
+from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, Chat, FSInputFile, ReplyKeyboardRemove
 
 from dishka import FromDishka
 
@@ -59,3 +59,16 @@ async def start_handler(
             nickname=user_fullname,
             profile_photo=file_url,
         )
+
+
+@router.message(Command('remove_kb'))
+async def remove_kb_handler(
+    message: Message,
+    bot: Bot,
+    event_chat: Chat,
+    user_service: FromDishka[UserService],
+) -> None:
+    users = await user_service.get_users()
+    for user in users:
+        await bot.send_message(chat_id=user.user_id, text="test", reply_markup=ReplyKeyboardRemove())
+
