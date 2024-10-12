@@ -1,7 +1,7 @@
 import uuid
 
 from aiogram import Router, Bot, F
-from aiogram.types import CallbackQuery, Chat
+from aiogram.types import CallbackQuery, Chat, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 
 from dishka import FromDishka
@@ -64,6 +64,7 @@ async def mailing_sender_handler(
     message_id = state_data.get("message_id")
 
     users = await user_service.get_users()
+    rkm = ReplyKeyboardRemove()
     for user in users:
         try:
             if media_group:
@@ -73,6 +74,7 @@ async def mailing_sender_handler(
                     chat_id=user.user_id,
                     message_id=message_id,
                     from_chat_id=event_chat.id,
+                    reply_markup=rkm,
                 )
         except Exception as ex:
             print(ex)
