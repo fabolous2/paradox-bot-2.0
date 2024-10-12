@@ -35,7 +35,7 @@ async def main() -> None:
         'redis://redis:6379/0',
         key_builder=DefaultKeyBuilder(with_destiny=True),
     )
-    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token="7398400733:AAFHHNfMQQBv-eCKPbn4QNoieA9-toWem2o", default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
 
     dispatcher.include_routers(
@@ -48,8 +48,8 @@ async def main() -> None:
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)
 
-    dispatcher.message.middleware.register(UserMiddleware(dishka_container=container))
-    dispatcher.callback_query.middleware.register(UserMiddleware(dishka_container=container))
+    # dispatcher.message.middleware.register(UserMiddleware(dishka_container=container))
+    # dispatcher.callback_query.middleware.register(UserMiddleware(dishka_container=container))
     TTLCacheAlbumMiddleware(router=dispatcher)
 
     try:

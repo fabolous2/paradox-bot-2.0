@@ -30,8 +30,10 @@ from src.data.dal import (
 
 class DatabaseProvider(Provider):
     @provide(scope=Scope.APP, provides=AsyncEngine)
-    def get_engine(self) -> AsyncEngine:
-        return create_async_engine(url=settings.db_connection_url)
+    async def get_engine(self) -> AsyncGenerator[AsyncEngine, None]:
+        engine = create_async_engine(url=settings.db_connection_url)
+        yield engine
+        engine.close()
 
     @provide(scope=Scope.APP, provides=async_sessionmaker[AsyncSession])
     def get_async_sessionmaker(self, engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
