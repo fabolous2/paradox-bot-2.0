@@ -70,5 +70,4 @@ async def remove_kb_handler(
 ) -> None:
     users = await user_service.get_users()
     for user in users:
-        await bot.send_message(chat_id=user.user_id, text="test", reply_markup=ReplyKeyboardRemove())
-
+        await bot.send_message(chat_id=user.user_id, text="Сейчас у нас произошло обновления бота,для тех у кого был баланс в боте,просьба отписать менеджеру для переноса баланса,обмануть не получится,у нас имеется база данных старая,поэтому все видим.", reply_markup=ReplyKeyboardRemove())
