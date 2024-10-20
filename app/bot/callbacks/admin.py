@@ -171,6 +171,7 @@ async def confirm_order_handler(
 ) -> None:
     order_id = query.data.split(':')[-1]
     order = await order_service.get_one_order(id=order_id)
+    print(order)
 
     if order.status == OrderStatus.PROGRESS.value:
         product = await product_service.get_one_product(id=order.product_id)
