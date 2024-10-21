@@ -173,7 +173,7 @@ async def confirm_order_handler(
     order = await order_service.get_one_order(id=order_id)
     print(order, flush=True)
 
-    if order.status == OrderStatus.PROGRESS.value:
+    if order.status == OrderStatus.PROGRESS:
         product = await product_service.get_one_product(id=order.product_id)
 
         await order_service.update_order(
