@@ -206,7 +206,7 @@ async def cancel_order_handler(
     order_id = query.data.split(':')[-1]
     order = await order_service.get_one_order(id=order_id)
     
-    if order.status == OrderStatus.PROGRESS.value:
+    if order.status == OrderStatus.PROGRESS:
         user = await user_service.get_one_user(user_id=order.user_id)
         product = await product_service.get_one_product(id=order.product_id)
 
