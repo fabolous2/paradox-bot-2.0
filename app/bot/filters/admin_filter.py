@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from aiogram.types import Message
 from aiogram.filters import BaseFilter
 
-from src.bot.app.main.config import dev_config
+from app.main.config import dev_config
 
 
 class AdminFilter(BaseFilter):

@@ -2,8 +2,6 @@ from uuid import UUID
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
-from src.bot.app.main.config import dev_config
-
 
 main_keyboard_markup = InlineKeyboardMarkup(
     inline_keyboard=[

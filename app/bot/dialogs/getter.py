@@ -12,8 +12,8 @@ from aiogram.enums import ContentType
 
 from dishka import FromDishka
 
-from src.services import GameService, ProductService, YandexStorageClient
-from src.main.config import settings
+from app.services import GameService, ProductService, YandexStorageClient
+from app.main.config import settings
 from .inject_wrappers import inject_getter
 
 

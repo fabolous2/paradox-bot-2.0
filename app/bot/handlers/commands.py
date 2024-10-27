@@ -6,9 +6,9 @@ from aiogram.types import Message, Chat, FSInputFile, ReplyKeyboardRemove
 
 from dishka import FromDishka
 
-from src.bot.app.bot.keyboards import inline
-from src.services import UserService
-from src.main.config import settings
+from app.bot.keyboards import inline
+from app.services import UserService
+from app.main.config import settings
 
 
 router = Router()
@@ -22,7 +22,7 @@ async def start_handler(
     user_service: FromDishka[UserService],
 ) -> None:
     await bot.send_photo(
-        photo=FSInputFile(os.path.normpath("src/bot/app/bot/files/paradox.jpg")),
+        photo=FSInputFile(os.path.normpath("app/bot/files/paradox.jpg")),
         chat_id=event_chat.id,
         caption="🛍 <a href='https://t.me/loudly_club1'>Paradox Shop</a> - сервис внутриигровых покупок и услуг!\n\n🔰 Наш приоритет дать возможность купить любую игровую валюту по лучшим ценам, а также предоставить вам скорейшее получение доната с гарантией безопасности вашего аккаунта",
         reply_markup=inline.main_keyboard_markup,
@@ -79,14 +79,3 @@ async def remove_kb_handler(
         except Exception as e:
             print(e)
             continue
-    # for id in ids_list:
-    #     try:
-    #         await bot.send_photo(
-    #             photo=FSInputFile(os.path.normpath("src/bot/app/bot/files/rm.jpg")),
-    #             chat_id=id,
-    #             caption="Вышли новые акции и они уже доступны в боте!\n\nДля лучшей работы бота пропишите /start (так как вчера сделали изменение которое может привести к багам, если не прописать /start)",
-    #             reply_markup=ReplyKeyboardRemove(),
-    #         )
-    #     except Exception as e:
-    #         print(e)
-    #         continue

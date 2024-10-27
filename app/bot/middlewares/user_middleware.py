@@ -5,8 +5,8 @@ from dishka import AsyncContainer, Scope
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject, Message, User
 
-from src.services import UserService
-from src.bot.app.main.config import settings
+from app.services import UserService
+from app.main.config import settings
 
 
 class UserMiddleware(BaseMiddleware):

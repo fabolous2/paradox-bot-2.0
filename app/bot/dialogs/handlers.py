@@ -10,9 +10,9 @@ from aiogram_dialog.widgets.text import Format
 
 from dishka import FromDishka
 
-from src.bot.app.bot.states.product import ProductManagementSG
+from app.bot.states.product import ProductManagementSG
 from .inject_wrappers import inject_on_click
-from src.services import ProductService, YandexStorageClient
+from app.services import ProductService, YandexStorageClient
 
 
 async def message_input_fixing(

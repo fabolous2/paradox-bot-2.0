@@ -1,9 +1,10 @@
-import toml
+import toml 
+from typing import Union
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.bot.app.schemas import AdminConfig, WebConfig
+from app.schemas import AdminConfig, WebConfig
 
 
 class TomlConfig(BaseModel):
@@ -28,12 +29,19 @@ class Settings(BaseSettings):
     
     model_config = SettingsConfigDict(env_file=".env")
 
+    @property
+    def db_connection_url(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.DB_HOST}/{self.DB_NAME}"
+    
+    def referral_url(self, referral_code: Union[str, int]) -> str:
+        return f"{self.BOT_URL}?start=ref_{referral_code}"
+
 
 settings = Settings()
 
 
 def load_toml_config() -> TomlConfig:
-    with open(settings.CONFIG_PATH) as fd:
+    with open(".config/dev.config.toml") as fd:
         cfg = TomlConfig.model_validate(toml.load(fd))
         return cfg
 

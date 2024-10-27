@@ -1,4 +1,4 @@
-from src.bot.app.bot.handlers import admin, commands, promo
+from app.bot.handlers import admin, commands, promo
 
 
 message_handlers = [

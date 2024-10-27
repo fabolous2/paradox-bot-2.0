@@ -15,13 +15,12 @@ from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
 
 from aiogram_dialog import setup_dialogs
 
-from src.bot.app.main.config import settings
-from src.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
-from src.bot.app.bot.handlers import message_handlers
-from src.bot.app.bot.callbacks import callback_handlers
-from src.bot.app.bot.middlewares import UserMiddleware
-from src.bot.app.bot.dialogs.product import product_management_dialog
-from src.bot.app.bot.dialogs.getter import YandexStorageMedia
+from app.main.config import settings
+from app.main.ioc import DatabaseProvider, DALProvider, ServiceProvider
+from app.bot.handlers import message_handlers
+from app.bot.callbacks import callback_handlers
+from app.bot.dialogs.product import product_management_dialog
+from app.bot.dialogs.getter import YandexStorageMedia
 
 logger = logging.getLogger(__name__)
 

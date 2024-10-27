@@ -3,9 +3,9 @@ from typing import AsyncGenerator
 from dishka import Provider, provide, Scope
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, async_sessionmaker, AsyncSession
 
-from src.main.config import settings
+from app.main.config import settings
 
-from src.services import (
+from app.services import (
     UserService,
     ProductService,
     TransactionService,
@@ -17,7 +17,7 @@ from src.services import (
     GameService,
     YandexStorageClient,
 )
-from src.data.dal import (
+from app.data.dal import (
     UserDAL,
     ProductDAL,
     TransactionDAL,

@@ -10,11 +10,11 @@ from aiogram_album.album_message import AlbumMessage
 
 from dishka import FromDishka
 
-from src.bot.app.bot.filters import AdminFilter
-from src.bot.app.bot.keyboards import inline
-from src.bot.app.bot.states import MailingSG, UpdateUserSG
-from src.services import UserService, TransactionService
-from src.schema.transaction import TransactionCause, TransactionType
+from app.bot.filters import AdminFilter
+from app.bot.keyboards import inline
+from app.bot.states import MailingSG, UpdateUserSG
+from app.services import UserService, TransactionService
+from app.schema.transaction import TransactionCause, TransactionType
 
 
 router = Router()

@@ -6,7 +6,7 @@ from aiogram_dialog.widgets.media import DynamicMedia
 
 from aiogram.enums.content_type import ContentType
 
-from src.bot.app.bot.states.product import ProductManagementSG
+from app.bot.states.product import ProductManagementSG
 from .getter import games_getter, one_game_getter, one_product_getter
 from .handlers import (
     selected_game,

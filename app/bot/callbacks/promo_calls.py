@@ -2,9 +2,9 @@ from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, Chat
 from aiogram.fsm.context import FSMContext
 
-from src.bot.app.bot.states import CreatePromoSG, EditPromoSG, InfoPromoSG, DeletePromoSG
-from src.bot.app.bot.filters import AdminFilter
-from src.bot.app.bot.keyboards import inline
+from app.bot.states import CreatePromoSG, EditPromoSG, InfoPromoSG, DeletePromoSG
+from app.bot.filters import AdminFilter
+from app.bot.keyboards import inline
 
 router = Router()
 router.callback_query.filter(AdminFilter())

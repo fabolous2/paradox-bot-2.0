@@ -2,7 +2,7 @@ import os
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, Chat, FSInputFile, InputMediaPhoto
 
-from src.bot.app.bot.keyboards import inline
+from app.bot.keyboards import inline
 
 
 router = Router()
@@ -25,7 +25,7 @@ async def support_handler(query: CallbackQuery, bot: Bot, event_chat: Chat) -> N
 @router.callback_query(F.data == "main_menu")
 async def main_menu(query: CallbackQuery, bot: Bot, event_chat: Chat) -> None:
     media = InputMediaPhoto(
-        media=FSInputFile(os.path.normpath("src/bot/app/bot/files/paradox.jpg")),
+        media=FSInputFile(os.path.normpath("app/bot/files/paradox.jpg")),
         caption="🛍 <a href='https://t.me/loudly_club1'>Paradox Shop</a> - сервис внутриигровых покупок и услуг!\n\n🔰 Наш приоритет дать возможность купить любую игровую валюту по лучшим ценам, а также предоставить вам скорейшее получение доната с гарантией безопасности вашего аккаунта",
     )
     await bot.edit_message_media(

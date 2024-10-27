@@ -8,12 +8,12 @@ from dishka import FromDishka
 
 from aiogram_dialog import DialogManager, StartMode, ShowMode
 
-from src.bot.app.bot.filters import AdminFilter
-from src.bot.app.bot.keyboards import inline
-from src.bot.app.bot.states import MailingSG, UpdateUserSG
-from src.services import OrderService, ProductService, UserService
-from src.schema.order import OrderStatus
-from src.bot.app.bot.states.product import ProductManagementSG
+from app.bot.filters import AdminFilter
+from app.bot.keyboards import inline
+from app.bot.states import MailingSG, UpdateUserSG
+from app.services import OrderService, ProductService, UserService
+from app.schema.order import OrderStatus
+from app.bot.states.product import ProductManagementSG
 
 
 router = Router()
