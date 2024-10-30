@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.media_group import MediaGroupBuilder
 
 from aiogram_album.album_message import AlbumMessage
+from aiogram_dialog import DialogManager, ShowMode, StartMode
 
 from dishka import FromDishka
 
@@ -41,36 +42,48 @@ async def mailing_message_handler(
     state: FSMContext,
     bot: Bot,
     event_chat: Chat,
+    dialog_manager: DialogManager,
 ) -> None:
     album_photo = [message.photo[-1].file_id for message in album_message]
-    media_group = MediaGroupBuilder(caption=album_message.caption)
+    # media_group = MediaGroupBuilder(caption=album_message.caption)
+    # for photo in album_photo:
+    #     media_group.add_photo(media=photo)
 
-    for photo in album_photo:
-        media_group.add_photo(media=photo)
-
-    await state.update_data(media_group=media_group)
-    await bot.send_message(
-        chat_id=event_chat.id,
-        text="Вы уверены, что хотите разослать это сообщение всем?",
-        reply_markup=inline.mailing_choice_kb_markup,
+    await state.update_data(album_photo=album_photo, album_caption=album_message.caption)
+    state_data = await state.get_data()
+    await dialog_manager.start(
+        MailingSG.BUTTON,
+        data=state_data,
+        mode=StartMode.RESET_STACK,
+        show_mode=ShowMode.DELETE_AND_SEND,
     )
-    await state.set_state(MailingSG.CHECKOUT)
+    # await bot.send_message(
+    #     chat_id=event_chat.id,
+    #     text="Вы уверены, что хотите разослать это сообщение всем?",
+    #     reply_markup=inline.mailing_choice_kb_markup,
+    # )
 
 
 @router.message(MailingSG.MESSAGE)
 async def mailing_message_handler(
     message: Message,
     state: FSMContext,
-    bot: Bot,
-    event_chat: Chat,
+    dialog_manager: DialogManager,
 ) -> None:
     await state.update_data(message_id=message.message_id)
-    await bot.send_message(
-        chat_id=event_chat.id,
-        text="Вы уверены, что хотите разослать это сообщение всем?",
-        reply_markup=inline.mailing_choice_kb_markup,
+    state_data = await state.get_data()
+    await dialog_manager.start(
+        MailingSG.BUTTON,
+        data=state_data,
+        mode=StartMode.RESET_STACK,
+        show_mode=ShowMode.DELETE_AND_SEND,
     )
-    await state.set_state(MailingSG.CHECKOUT)
+    # await bot.send_message(
+    #     chat_id=event_chat.id,
+    #     text="Вы уверены, что хотите разослать это сообщение всем?",
+    #     reply_markup=inline.mailing_choice_kb_markup,
+    # )
+    # await state.set_state(MailingSG.CHECKOUT)
 
 
 #User Management

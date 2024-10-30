@@ -10,7 +10,6 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.fsm.storage.base import DefaultKeyBuilder
 
-
 from aiogram_album.ttl_cache_middleware import TTLCacheAlbumMiddleware
 
 from aiogram_dialog import setup_dialogs
@@ -21,6 +20,8 @@ from app.bot.handlers import message_handlers
 from app.bot.callbacks import callback_handlers
 from app.bot.dialogs.product import product_management_dialog
 from app.bot.dialogs.getter import YandexStorageMedia
+from app.bot.dialogs.mailing import mailing_dialog
+
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +42,13 @@ async def main() -> None:
         *message_handlers,
         *callback_handlers,
         product_management_dialog,
+        mailing_dialog,
     )
     setup_dialogs(dispatcher, message_manager=YandexStorageMedia())
 
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)
 
-    # dispatcher.message.middleware.register(UserMiddleware(dishka_container=container))
-    # dispatcher.callback_query.middleware.register(UserMiddleware(dishka_container=container))
     TTLCacheAlbumMiddleware(router=dispatcher)
 
     try:

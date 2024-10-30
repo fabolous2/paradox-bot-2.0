@@ -66,7 +66,7 @@ async def mailing_sender_handler(
     users = await user_service.get_users()
     rkm = ReplyKeyboardRemove()
     for user in users:
-        try:
+        try: 
             if media_group:
                 await bot.send_media_group(chat_id=user.user_id, media=media_group.build())
             elif message_id:

@@ -23,6 +23,28 @@ back_to_main_menu_markup = InlineKeyboardMarkup(
     ]
 )
 
+def web_app_button(game_id: int) -> InlineKeyboardMarkup:
+    if int(game_id) == 1:
+        url = "https://paradox-shop.ru/game/1"
+    elif int(game_id) == 2:
+        url = "https://paradox-shop.ru/game/2"
+    elif int(game_id) == 3:
+        url = "https://paradox-shop.ru/game/3"
+    elif int(game_id) == 4:
+        url = "https://paradox-shop.ru/game/4"
+    elif int(game_id) == 5:
+        url = "https://paradox-shop.ru/game/5"
+    elif int(game_id) == -1:
+        url = "https://paradox-shop.ru/"
+
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="ЗА ДОНАТОМ!", web_app=WebAppInfo(url=url))
+            ]
+        ]
+    )
+
 
 admin_menu_kb_markup = InlineKeyboardMarkup(
     inline_keyboard=[

@@ -1,7 +1,8 @@
 import uuid
 
-from aiogram.types import CallbackQuery, Message
 from aiogram import Bot
+from aiogram.types import CallbackQuery, Message
+from aiogram.utils.media_group import MediaGroupBuilder
 
 from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog.widgets.input import MessageInput, TextInput
@@ -12,7 +13,9 @@ from dishka import FromDishka
 
 from app.bot.states.product import ProductManagementSG
 from .inject_wrappers import inject_on_click
-from app.services import ProductService, YandexStorageClient
+from app.services import ProductService, YandexStorageClient, UserService
+from app.bot.states.mailing import MailingSG
+from app.bot.keyboards import inline
 
 
 async def message_input_fixing(
@@ -296,3 +299,74 @@ async def on_input_photo_new_product(
         print(e)
     finally:
         await dialog_manager.switch_to(ProductManagementSG.GAME_MANAGEMENT)
+
+
+@inject_on_click
+async def selected_game_button(
+    callback_query: CallbackQuery,
+    widget: Select,
+    item_id: str,
+    dialog_manager: DialogManager,
+) -> None:
+    dialog_manager.dialog_data["game_button_id"] = item_id
+    await dialog_manager.switch_to(MailingSG.CHECKOUT)
+
+
+@inject_on_click
+async def main_menu_button(
+    callback_query: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+) -> None:
+    dialog_manager.dialog_data["game_button_id"] = -1
+    await dialog_manager.switch_to(MailingSG.CHECKOUT)
+
+
+
+@inject_on_click
+async def confirm_mailing(
+    callback_query: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+    user_service: FromDishka[UserService],
+) -> None:
+    album_photo = dialog_manager.start_data.get("album_photo")
+    users = await user_service.get_users()
+    bot: Bot = dialog_manager.middleware_data.get("bot")
+    message_id = dialog_manager.start_data.get("message_id")
+    album_caption = dialog_manager.start_data.get("album_caption")
+
+    for user in users:
+        try: 
+            if album_photo:
+                media_group = MediaGroupBuilder(caption=album_caption)
+                for photo in album_photo:
+                    media_group.add_photo(media=photo)
+                await bot.send_media_group(chat_id=user.user_id, media=media_group.build())
+            elif message_id:
+                await bot.copy_message(
+                    chat_id=user.user_id,
+                    message_id=message_id,
+                    from_chat_id=callback_query.message.chat.id,
+                    reply_markup=inline.web_app_button(dialog_manager.dialog_data["game_button_id"]),
+                )
+        except Exception as ex:
+            print(ex)
+
+    await bot.send_message(chat_id=callback_query.message.chat.id, text="Сообщение успешно разослано пользователям!")
+    await bot.delete_message(
+        chat_id=callback_query.message.chat.id,
+        message_id=callback_query.message.message_id,
+    )
+    await dialog_manager.done()
+
+
+async def cancel_mailing(
+    callback_query: CallbackQuery,
+    widget: Button,
+    dialog_manager: DialogManager,
+) -> None:
+    bot = dialog_manager.middleware_data.get("bot")
+    await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
+    await bot.send_message(chat_id=callback_query.message.chat.id, text="Рассылка успешно отменена")
+    await dialog_manager.done()
