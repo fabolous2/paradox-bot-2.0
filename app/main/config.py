@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     YANDEX_STORAGE_BUCKET_NAME: str
     
     model_config = SettingsConfigDict(env_file=".env")
-
+    
     @property
     def db_connection_url(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.DB_HOST}/{self.DB_NAME}"

@@ -37,7 +37,7 @@ mailing_dialog = Dialog(
         ),
         Button(
             id='main_menu_button',
-            text="Главное меню",
+            text=Const("Главное меню"),
             on_click=main_menu_button,
         ),
         Row(
@@ -61,12 +61,12 @@ mailing_dialog = Dialog(
         Const("Вы уверены, что хотите разослать это сообщение всем?"),
         Button(
             id='confirm_mailing_button',
-            text="✅ Да",
+            text=Const("✅ Да"),
             on_click=confirm_mailing,
         ),
         Button(
             id='cancel_mailing_button',
-            text="❌ Нет",
+            text=Const("❌ Нет"),
             on_click=cancel_mailing,
         ),
         state=MailingSG.CHECKOUT,

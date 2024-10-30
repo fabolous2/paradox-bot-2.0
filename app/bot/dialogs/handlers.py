@@ -305,8 +305,8 @@ async def on_input_photo_new_product(
 async def selected_game_button(
     callback_query: CallbackQuery,
     widget: Select,
-    item_id: str,
     dialog_manager: DialogManager,
+    item_id: str,
 ) -> None:
     dialog_manager.dialog_data["game_button_id"] = item_id
     await dialog_manager.switch_to(MailingSG.CHECKOUT)
@@ -347,6 +347,7 @@ async def confirm_mailing(
                 await bot.copy_message(
                     chat_id=user.user_id,
                     message_id=message_id,
+                    caption=album_caption,
                     from_chat_id=callback_query.message.chat.id,
                     reply_markup=inline.web_app_button(dialog_manager.dialog_data["game_button_id"]),
                 )

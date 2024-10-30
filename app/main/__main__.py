@@ -37,6 +37,7 @@ async def main() -> None:
     )
     bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher(storage=storage)
+    TTLCacheAlbumMiddleware(router=dispatcher, latency=0.5)
 
     dispatcher.include_routers(
         *message_handlers,
@@ -48,8 +49,6 @@ async def main() -> None:
 
     container = make_async_container(DatabaseProvider(), DALProvider(), ServiceProvider())
     setup_dishka(container=container, router=dispatcher, auto_inject=True)
-
-    TTLCacheAlbumMiddleware(router=dispatcher)
 
     try:
         await bot.delete_webhook(drop_pending_updates=True)
