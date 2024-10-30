@@ -24,16 +24,8 @@ back_to_main_menu_markup = InlineKeyboardMarkup(
 )
 
 def web_app_button(game_id: int) -> InlineKeyboardMarkup:
-    if int(game_id) == 1:
-        url = "https://paradox-shop.ru/game/1"
-    elif int(game_id) == 2:
-        url = "https://paradox-shop.ru/game/2"
-    elif int(game_id) == 3:
-        url = "https://paradox-shop.ru/game/3"
-    elif int(game_id) == 4:
-        url = "https://paradox-shop.ru/game/4"
-    elif int(game_id) == 5:
-        url = "https://paradox-shop.ru/game/5"
+    if int(game_id) > 0:
+        url = f"https://paradox-shop.ru/game?id={game_id}"
     elif int(game_id) == -1:
         url = "https://paradox-shop.ru/"
 
