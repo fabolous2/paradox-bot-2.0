@@ -36,6 +36,7 @@ mailing_dialog = Dialog(
             hide_pager=True
         ),
         Button(
+            id='main_menu_button',
             text="Главное меню",
             on_click=main_menu_button,
         ),
@@ -59,10 +60,12 @@ mailing_dialog = Dialog(
     Window(
         Const("Вы уверены, что хотите разослать это сообщение всем?"),
         Button(
+            id='confirm_mailing_button',
             text="✅ Да",
             on_click=confirm_mailing,
         ),
         Button(
+            id='cancel_mailing_button',
             text="❌ Нет",
             on_click=cancel_mailing,
         ),
