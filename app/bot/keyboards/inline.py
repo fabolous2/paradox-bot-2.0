@@ -32,7 +32,7 @@ def web_app_button(game_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="ЗА ДОНАТОМ!", web_app=WebAppInfo(url=url))
+                InlineKeyboardButton(text="КУПИТЬ", web_app=WebAppInfo(url=url))
             ]
         ]
     )
