@@ -42,7 +42,13 @@ class DatabaseProvider(Provider):
     @provide(scope=Scope.REQUEST, provides=AsyncSession)
     async def get_async_session(self, sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncGenerator[AsyncSession, None]:
         async with sessionmaker() as session:
-            yield session
+            try:
+                yield session
+            except Exception as e:
+                await session.rollback()
+                raise e
+            finally:
+                await session.close()
 
 
 class DALProvider(Provider):
